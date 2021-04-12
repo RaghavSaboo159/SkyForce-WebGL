@@ -1,0 +1,11 @@
+Model Information:
+* title:	F117 - 64 mm EDF
+* source:	https://sketchfab.com/3d-models/f117-64-mm-edf-fc868b4444d44f838b3dae3956aa4d8d
+* author:	Matagami (https://sketchfab.com/Matagami)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "F117 - 64 mm EDF" (https://sketchfab.com/3d-models/f117-64-mm-edf-fc868b4444d44f838b3dae3956aa4d8d) by Matagami (https://sketchfab.com/Matagami) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
