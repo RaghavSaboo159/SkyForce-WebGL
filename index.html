@@ -23,25 +23,38 @@
         }
         body, html {
             margin: 0;
-            background-image: url("./models/download.jpeg");
+            /* background-image: url("./models/download.jpeg"); */
             height: 100%; 
-            background-position: center;
-            background-repeat: no-repeat;
-            background-size: cover;
+            /* background-position: center; */
+            /* background-repeat: no-repeat; */
+            /* background-size: cover; */
+        }
+        #myVideo {
+            position: fixed;
+            right: 0;
+            bottom: 0;
+            min-width: 100%; 
+            min-height: 100%;
+            z-index: -1; 
         }
 
     </style>
 </head>
 
 <body>
-        <div id="overlay">
+    <video autoplay muted loop id="myVideo">
+        <source src="./stars.mp4" type="video/mp4">
+        Your browser does not support HTML5 video.
+    </video>
+      
+    <div id="overlay">
         <div>Health: <input type="text" id="health" value="0"></div>
         <div>Score: <input type="text" id="score" value="0"></div>
-</div>
+    </div>
 
 
     <script src="./js/three.js"></script>
-    <script src="./js/OrbitControls.js"></script>
+    <!-- <script src="./js/OrbitControls.js"></script> -->
     <script src="./js/GLTFLoader.js"></script>
     <script>
         var scene = new THREE.Scene();
@@ -60,10 +73,8 @@
             camera.updateProjectionMatrix();
         });
 
-
-        controls = new THREE.OrbitControls(camera, renderer.domElement);
-        camera.position.z = 2;
-        camera.position.y = 1;
+        camera.position.z = 3;
+        camera.position.y = 1.5;
 
         var ambientLight = new THREE.AmbientLight( 0xffffff, 1.0 );
         scene.add(ambientLight);
@@ -72,8 +83,8 @@
 
         // Load a glTF resource
         var model;
-        var xSpeed = 0.04;
-        var ySpeed = 0.04;
+        var xSpeed = 0.15;
+        var ySpeed = 0.15;
         
         loader.load(
             // resource URL
@@ -81,21 +92,20 @@
             // called when the resource is loaded
             function (gltf) {
                 model = gltf;
-                console.log(gltf.scene);
+                // console.log(gltf.scene);
                 gltf.scene.children[0].children[0].children[0].children[0].children[0].children[0].children[0].material.metalness=0;
-                gltf.scene.rotation.y+=3.2;
-                gltf.scene.rotation.x+=0.5;
+                gltf.scene.rotation.y+=3.15;
+                gltf.scene.rotation.x+=0.3;
                 // gltf.scene.rotation.z+=0.5;
 
                 gltf.scene.scale.x/=50;
                 gltf.scene.scale.y/=50;
                 gltf.scene.scale.z/=50;
                 gltf.scene.position.y=0;
-                gltf.scene.position.z=-5;
+                gltf.scene.position.z=-4.5;
                 gltf.scene.position.x=0;
 
                 scene.add(gltf.scene);
-                console.log(gltf.scene.name);
                 gltf.animations; // Array<THREE.AnimationClip>
                 gltf.scene; // THREE.Group
                 gltf.scenes; // Array<THREE.Group>
@@ -202,18 +212,18 @@
             // console.log("x====" +model.scene.position.x);
             // console.log("y====" + model.scene.position.y);
 
-            if(((et-pot)/1000)>0.25){
+            if(((et-pot)/1000)>0.07){
                 // console.log("inhere");
                 pot=new Date();
                 for( i=0;i<tr;i++){
                     if(torus[i].scene.position.x<model.scene.position.x )
-                    torus[i].scene.position.x+=0.02;   
+                    torus[i].scene.position.x+=0.1;   
                     else
-                    torus[i].scene.position.x-=0.02;
+                    torus[i].scene.position.x-=0.1;
                     const playerBox = new THREE.Box3().setFromObject(model.scene);
                     const enemyBox = new THREE.Box3().setFromObject(torus[i].scene);
                     if(playerBox.intersectsBox(enemyBox) && vtorus[i]==0) {
-                            console.log("YES\n");
+                            // console.log("YES\n");
                             cnth-=1;
                             scene.remove(torus[i].scene);
                             vtorus[i]=1;
@@ -225,17 +235,20 @@
 
             }
 
-            if(((et-st)/1000)>0.5){
+            if(((et-st)/1000)>0.07){
                 // console.log("inhere");
                 st=new Date();
                 for( i=0;i<r;i++){
-                    cylinder[i].position.y+=0.08;
+                    cylinder[i].position.z-=0.1;   
+                    // if(cylinder[i].position.y>model.scene.position.y)
+                        // cylinder[i].position.y-=0.1;   
+                    // cylinder[i].position.y+=0.08;
                     if(vcylinder[i]==0){
                         const playerBox = new THREE.Box3().setFromObject(cylinder[i]);
                         for( j=0;j<tr;j++){
                             const enemyBox = new THREE.Box3().setFromObject(torus[j].scene);
                             if(playerBox.intersectsBox(enemyBox) && vtorus[j]==0) {
-                                    console.log("YES\n");
+                                    // console.log("YES\n");
                                     scene.remove(cylinder[i]);
                                     scene.remove(torus[j].scene);
                                     vtorus[j]=1;
@@ -248,11 +261,15 @@
                     }   
                 }
                 for( i=0;i<cr;i++){
-                    circle[i].position.y-=0.08;   
+                    // circle[i].position.y-=0.08;   
+                    circle[i].position.z+=0.1;   
+                    if(circle[i].position.y>model.scene.position.y)
+                        circle[i].position.y-=0.1;   
+
                     const playerBox = new THREE.Box3().setFromObject(model.scene);
                     const enemyBox = new THREE.Box3().setFromObject(circle[i]);
                     if(playerBox.intersectsBox(enemyBox) && vcircle[i]==0) {
-                            console.log("YES\n");
+                            // console.log("YES\n");
                             cnts+=1;
                             scene.remove(circle[i]);
                             vcircle[i]=1;
@@ -260,11 +277,13 @@
                     }
                 }
                 for( i=0;i<tr;i++){
-                    torus[i].scene.position.y-=0.08;   
+                    torus[i].scene.position.z+=0.1;   
+                    if(torus[i].scene.position.y>model.scene.position.y)
+                        torus[i].scene.position.y-=0.1;   
                     const playerBox = new THREE.Box3().setFromObject(model.scene);
                     const enemyBox = new THREE.Box3().setFromObject(torus[i].scene);
                     if(playerBox.intersectsBox(enemyBox) && vtorus[i]==0) {
-                            console.log("YES\n");
+                            // console.log("YES\n");
                             cnth-=1;
                             scene.remove(torus[i].scene);
                             vtorus[i]=1;
@@ -277,10 +296,10 @@
             if(((et-stc)/1000)>5){
                 stc=new Date();
                 circle[cr] = new THREE.Mesh( geometryc, materialc );
-                // console.log(randomNumber(-2.0,2.8));
-                circle[cr].position.x=randomNumber(-2.0,2.8);
-                circle[cr].position.y=2.50;
-                circle[cr].position.z=model.scene.position.z;
+                // console.log(randomNumber(-12.0,12.0));
+                circle[cr].position.x=randomNumber(-9.0,9.0);
+                circle[cr].position.y=model.scene.position.y;
+                circle[cr].position.z=-15;
                 scene.add( circle[cr] );
                 vcircle[cr]=0;
                 cr++;
@@ -289,13 +308,6 @@
             }
             if(((et-stt)/1000)>7){
                 stt=new Date();
-                // torus[tr] = new THREE.Mesh( geometryt, materialt );
-                // // console.log(randomNumber(-2.0,2.8));
-                // torus[tr].position.x=randomNumber(-2.0,2.8);
-                // torus[tr].position.y=2.50;
-                // torus[tr].position.z=model.scene.position.z;
-                // scene.add( torus[tr] );
-                // tr++;
                 loader.load(
             // resource URL
                     './models/small_glytchbug/scene.gltf',
@@ -304,19 +316,19 @@
                         torus[tr] = gltf;
                         vtorus[tr]=0;
                         tr++;
-                        console.log(gltf.scene);
+                        // console.log(gltf.scene);
                         // gltf.scene.children[0].children[0].children[0].children[0].children[0].children[0].children[0].material.metalness=0;
                         gltf.scene.rotation.y+=3.2;
                         gltf.scene.rotation.x+=2;
                         gltf.scene.scale.x/=4;
                         gltf.scene.scale.y/=4;
                         gltf.scene.scale.z/=4;
-                        gltf.scene.position.y=5;
-                        gltf.scene.position.z=-5;
-                        gltf.scene.position.x=randomNumber(-2.0,2.8);
+                        gltf.scene.position.y=model.scene.position.y;
+                        gltf.scene.position.z=-15;
+                        gltf.scene.position.x=randomNumber(-12.0,12.0);
 
                         scene.add(gltf.scene);
-                        console.log(gltf.scene.name);
+                        // console.log(gltf.scene.name);
                         gltf.animations; // Array<THREE.AnimationClip>
                         gltf.scene; // THREE.Group
                         gltf.scenes; // Array<THREE.Group>
@@ -349,9 +361,6 @@
         // run game loop (update, render, repeat)
         var GameLoop = function () {
             requestAnimationFrame(GameLoop);
-            // console.log(model.scene.position.x);
-            // console.log(model.scene.position.y);
-
             update();
             render();
         };
@@ -359,23 +368,22 @@
         function onDocumentKeyDown(event) {
             var keyCode = event.which;
             if (keyCode == 87) {
-                model.scene.position.y += ySpeed;
-                // camera.position.z+=ySp   eed;
+                model.scene.position.z -= ySpeed;
             } else if (keyCode == 83) {
-                model.scene.position.y -= ySpeed;
-                // camera.position.z-=ySpeed;
+                model.scene.position.z += ySpeed;
             } else if (keyCode == 65) {
                 model.scene.position.x -= xSpeed;
+                model.scene.rotation.z-=xSpeed;
             } else if (keyCode == 68) {
+                model.scene.rotation.z+=xSpeed;
                 model.scene.position.x += xSpeed;
             } else if (keyCode == 32) {
                 model.scene.position.set(0, 0, 0);
             }else if(keyCode==74){
-                // console.log("inhere");
                 cylinder[r] = new THREE.Mesh( geometry, material );
                 cylinder[r].position.x=model.scene.position.x;
-                cylinder[r].position.y=model.scene.position.y+0.66;
-                cylinder[r].position.z=model.scene.position.z;
+                cylinder[r].position.y=model.scene.position.y;
+                cylinder[r].position.z=model.scene.position.z-1.5;
                 scene.add( cylinder[r] );
                 vcylinder[r]=0;
                 r++;
